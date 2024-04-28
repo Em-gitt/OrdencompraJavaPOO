@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OrdenCompra {
@@ -47,15 +48,14 @@ public class OrdenCompra {
         this.cliente = cliente;
     }
 
-    public OrdenCompra addProducto(Producto producto){
+    public void addProducto(Producto producto){
         if(indiceProductos < this.productos.length){
             this.productos[indiceProductos++] = producto;
         }
-        return this;
     }
 
-    public double calcularTotal(Producto producto) {
-        double precio=0;
+    public double calcularTotal() {
+        double precio;
         double total = 0;
         for (Producto p : this.getProductos()) {
                 precio = p.getPrecio();
@@ -64,18 +64,27 @@ public class OrdenCompra {
         return total;
     }
 
+    public String fechaString(){
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        return df.format(this.fecha);
+    }
+
     public String verDetalle(){
-        String detalle = "compra.id = "+ this.getId() +
-                "\ncompra.descripcion = " + this.getDescripcion() +
-                "\ncompra.fecha = " + this.getFecha();
+        String detalle="Detalles de la orden "+this.getId();
+        detalle += "\nID de la compra: "+ this.getId() +
+                "\nDescripción de la compra: " + this.getDescripcion() +
+                "\nFecha de la compra: " + fechaString();
         if(this.getCliente()!=null){
-            detalle+="\ncompra.cliente = " + this.getCliente();
+            detalle+="\nNombre del comprador: " + this.getCliente();
         }
         if(this.getProductos()!=null){
-            detalle+="\nProductos de la orden:";
+            int i=1;
             for(Producto p: this.getProductos()){
-                detalle+="\n"+p.getFabricante() + ", Nombre: " + p.getNombre()+ ", precio: " + p.getPrecio();
-            };
+                detalle+="\nProducto "+i+": "+p.getFabricante() + ", Nombre: " + p.getNombre()+ ", precio: " + p.getPrecio();
+                i++;
+            }
+            detalle+="\nTotal de la orden "+this.calcularTotal();
+            System.out.println();
         }
         return detalle;
     }
